@@ -1,0 +1,33 @@
+# Replace the placeholders manually, or use .wrangler/generated/shopify.app.toml after deployment.
+client_id = "YOUR_SHOPIFY_CLIENT_ID"
+name = "Reviews Cloud"
+application_url = "https://YOUR-WORKER.workers.dev"
+embedded = true
+handle = "reviews-cloud"
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2026-07"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = ["products/create", "products/update", "products/delete"]
+uri = "/webhooks/products"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "/webhooks/compliance"
+
+[access_scopes]
+scopes = "read_products,read_orders,read_customers"
+
+[auth]
+redirect_urls = [
+  "https://YOUR-WORKER.workers.dev/auth/callback"
+]

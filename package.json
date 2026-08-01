@@ -1,0 +1,44 @@
+{
+  "name": "shopify-reviews-cloudflare-app",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare-native Shopify reviews app with clean GitHub deployment for Workers, D1, R2, Queues and Durable Objects.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "node scripts/deploy-all.mjs",
+    "deploy:ci": "node scripts/provision.mjs --deploy --ci",
+    "deploy:cloudflare": "node scripts/provision.mjs --deploy",
+    "deploy:worker": "wrangler deploy",
+    "provision": "node scripts/provision.mjs",
+    "workers-build:bootstrap": "node scripts/cloudflare-build-hook.mjs",
+    "types": "wrangler types",
+    "db:migrate:local": "wrangler d1 migrations apply reviews-db --local",
+    "db:migrate:remote": "node scripts/provision.mjs --migrate-only",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "check": "node --experimental-strip-types --check src/index.ts && node --check src/core.mjs && node --check scripts/provision.mjs && node --check scripts/cloudflare-build-hook.mjs && node --check scripts/deploy-all.mjs && node --experimental-strip-types --test tests/*.test.mjs",
+    "zip": "node scripts/make-zip.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.114.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "cloudflare": {
+    "bindings": {
+      "SHOPIFY_API_KEY": {
+        "description": "A normal-text setup placeholder is created automatically. Replace it with the Shopify app client ID. You may change it to Secret to match the sync app deployment pattern."
+      },
+      "SHOPIFY_API_SECRET": {
+        "description": "A normal-text setup placeholder is created automatically. Replace it with the Shopify app client secret, change the type to Secret, and deploy."
+      },
+      "APP_ENCRYPTION_KEY": {
+        "description": "A normal-text setup placeholder is created automatically. Replace it with a stable random value of at least 32 characters, change the type to Secret, and deploy."
+      },
+      "TURNSTILE_SECRET": {
+        "description": "Optional. Add this as a Worker secret only when Cloudflare Turnstile is enabled on the storefront form."
+      }
+    }
+  }
+}

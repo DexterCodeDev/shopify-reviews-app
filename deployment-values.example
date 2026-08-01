@@ -1,0 +1,36 @@
+# GitHub-connected Cloudflare deployment values for Reviews Cloud v1.1.0
+# Do not commit real credentials.
+
+# A) Cloudflare Worker -> Settings -> Build
+# Required for the first GitHub deployment. CLOUDFLARE_API_TOKEN must be a build secret,
+# not a Worker runtime variable.
+CLOUDFLARE_ACCOUNT_ID=ADD_CLOUDFLARE_ACCOUNT_ID_AS_BUILD_TEXT
+CLOUDFLARE_API_TOKEN=ADD_CLOUDFLARE_API_TOKEN_THEN_CHANGE_BUILD_TYPE_TO_SECRET
+CLOUDFLARE_PRODUCTION_BRANCH=main
+
+# B) Optional: provide application credentials during the build so they are uploaded
+# directly as encrypted Worker secrets. When omitted, the first deployment creates
+# normal-text setup placeholders that you can replace in Worker Settings.
+SHOPIFY_API_KEY=OPTIONAL_SHOPIFY_CLIENT_ID
+SHOPIFY_API_SECRET=OPTIONAL_SHOPIFY_CLIENT_SECRET
+APP_ENCRYPTION_KEY=OPTIONAL_STABLE_RANDOM_VALUE_AT_LEAST_32_CHARACTERS
+TURNSTILE_SECRET=OPTIONAL_TURNSTILE_SECRET
+
+# C) Optional deployment names and URLs
+WORKER_NAME=shopify-reviews-cloudflare
+RESOURCE_PREFIX=shopify-reviews
+# APPLICATION_URL=https://reviews.example.com
+# WORKERS_SUBDOMAIN=your-account-subdomain
+# PUBLIC_CDN_BASE=https://reviews-cdn.example.com
+# D1_DATABASE_NAME=shopify-reviews-db
+# R2_BUCKET_NAME=shopify-reviews-projections
+# EVENT_QUEUE_NAME=shopify-reviews-events
+# EVENT_DLQ_NAME=shopify-reviews-events-dlq
+
+# D) Optional runtime configuration
+SHOPIFY_API_VERSION=2026-07
+SHOPIFY_SCOPES=read_products,read_orders,read_customers
+PROJECTION_CACHE_SECONDS=60
+
+# Paid Queues support longer retention. Free plans automatically fall back to 24 hours.
+QUEUE_MESSAGE_RETENTION_SECONDS=1209600

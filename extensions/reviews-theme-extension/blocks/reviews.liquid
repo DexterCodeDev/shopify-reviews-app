@@ -1,0 +1,53 @@
+{% liquid
+  assign shop_key = shop.permanent_domain
+  assign product_id = product.id
+%}
+
+<section
+  class="rc-widget"
+  data-rc-widget
+  data-shop-key="{{ shop_key | escape }}"
+  data-product-id="{{ product_id | escape }}"
+  data-cdn-base="{{ block.settings.cdn_base | escape }}"
+  data-api-base="{{ block.settings.api_base | escape }}"
+  data-heading="{{ block.settings.heading | escape }}"
+  data-show-form="{{ block.settings.show_form }}"
+  aria-live="polite"
+>
+  <div class="rc-loading">Loading reviews…</div>
+</section>
+
+{% schema %}
+{
+  "name": "Product reviews",
+  "target": "section",
+  "javascript": "reviews-widget.js",
+  "stylesheet": "reviews-widget.css",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer reviews"
+    },
+    {
+      "type": "url",
+      "id": "cdn_base",
+      "label": "Projection CDN base URL",
+      "info": "For local development use your tunnel URL followed by /cdn. In production use the R2 custom domain."
+    },
+    {
+      "type": "url",
+      "id": "api_base",
+      "label": "Public API base URL",
+      "info": "Your deployed Cloudflare Worker URL."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_form",
+      "label": "Show review form",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

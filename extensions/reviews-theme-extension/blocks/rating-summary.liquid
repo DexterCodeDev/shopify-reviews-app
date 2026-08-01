@@ -1,0 +1,23 @@
+<span
+  class="rc-rating-summary"
+  data-rc-rating-summary
+  data-shop-key="{{ shop.permanent_domain | escape }}"
+  data-product-id="{{ product.id | escape }}"
+  data-cdn-base="{{ block.settings.cdn_base | escape }}"
+>Not yet rated</span>
+
+{% schema %}
+{
+  "name": "Review rating summary",
+  "target": "section",
+  "javascript": "reviews-widget.js",
+  "stylesheet": "reviews-widget.css",
+  "settings": [
+    {
+      "type": "url",
+      "id": "cdn_base",
+      "label": "Projection CDN base URL"
+    }
+  ]
+}
+{% endschema %}

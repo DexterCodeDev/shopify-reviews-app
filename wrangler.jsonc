@@ -1,0 +1,83 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shopify-reviews-cloudflare",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-31",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  },
+  "vars": {
+    "APP_ENV": "development",
+    "APP_URL": "http://localhost:8787",
+    "PUBLIC_CDN_BASE": "http://localhost:8787/cdn",
+    "SHOPIFY_API_KEY": "ADD_SHOPIFY_CLIENT_ID_THEN_CHANGE_TYPE_TO_SECRET",
+    "SHOPIFY_API_SECRET": "ADD_SHOPIFY_CLIENT_SECRET_THEN_CHANGE_TYPE_TO_SECRET",
+    "APP_ENCRYPTION_KEY": "ADD_STABLE_RANDOM_KEY_AT_LEAST_32_CHARS_THEN_CHANGE_TYPE_TO_SECRET",
+    "SHOPIFY_API_VERSION": "2026-07",
+    "SHOPIFY_SCOPES": "read_products,read_orders,read_customers",
+    "DEV_SHOP_DOMAIN": "demo-shop.myshopify.com",
+    "DEV_ADMIN_TOKEN": "dev-admin-token-change-me",
+    "PROJECTION_CACHE_SECONDS": "60"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "reviews-db",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PROJECTIONS",
+      "bucket_name": "shopify-reviews-projections"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "EVENTS",
+        "queue": "shopify-reviews-events"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "shopify-reviews-events",
+        "max_batch_size": 20,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "dead_letter_queue": "shopify-reviews-events-dlq"
+      }
+    ]
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PROJECTION_COORDINATOR",
+        "class_name": "ProductProjectionDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "ProductProjectionDO"
+      ]
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "workers_dev": true,
+  "minify": true,
+  "build": {
+    "command": "node scripts/cloudflare-build-hook.mjs"
+  },
+  "keep_vars": true
+}
